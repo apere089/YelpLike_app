@@ -1,6 +1,7 @@
 const express = require('express'),
 bodyParser    = require('body-parser'),
 Campsite      = require('./models/campsites'),
+Comment       = require('./models/comments'),
 mongoose      = require('mongoose'),
 seedDB				= require('./seeds'),
 app           = express();
@@ -23,7 +24,7 @@ app.get('/campsites', (req, res) => {
     if(err)
       console.error(err);
     else
-      res.render('index', {camps: camps});
+      res.render('campsites/index', {camps: camps});
   });
 });
 
@@ -40,7 +41,7 @@ app.post('/campsites', (req, res) => {
 });
 
 app.get('/campsites/new', (req, res) => {
-  res.render('new');
+  res.render('campsites/new');
 });
 
 app.get('/campsites/:id', (req, res) => {
@@ -48,7 +49,34 @@ app.get('/campsites/:id', (req, res) => {
     if(err)
       console.error(err);
     else
-      res.render('show', {camp: camp});
+      res.render('campsites/show', {camp: camp});
+  });
+});
+
+app.get('/campsites/:id/comments/new', (req, res) => {
+  Campsite.findById(req.params.id, (err, camp) => {
+    if(err)
+      console.error(err);
+    else
+      res.render('comments/new', {camp: camp});
+  });
+});
+
+app.post('/campsites/:id/comments', (req, res) => {
+  Campsite.findById(req.params.id, (err, camp) => {
+    if(err)
+      console.error(err);
+    else {
+      Comment.create(req.body.comment, (err, comment) => {
+        if(err)
+          console.error(err);
+        else {
+          camp.comments.push(comment);
+          camp.save();
+          res.redirect('/campsites/' + camp._id);
+        }
+      });
+    }
   });
 });
 //=========== /Routes_Setup ==========
