@@ -6,13 +6,13 @@ mongoose      = require('mongoose'),
 seedDB				= require('./seeds'),
 app           = express();
 
-seedDB();
+
 //=========== App_Setup ==========
+mongoose.connect('mongodb://localhost:27017/yelp_camp', {useUnifiedTopology: true, useNewUrlParser: true});
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
-
-//=========== Db_Setup ==========
-mongoose.connect('mongodb://localhost:27017/yelp_camp', {useUnifiedTopology: true, useNewUrlParser: true});
+app.use(express.static(__dirname + '/public'));
+seedDB();
 
 //=========== Routes_Setup ==========
 app.get('/', (req, res) => {
