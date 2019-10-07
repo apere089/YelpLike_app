@@ -1,6 +1,7 @@
 const express = require('express'),
 router        = express.Router(),
-Campsite      = require('../models/campsites');
+Campsite      = require('../models/campsites'),
+Comment       = require('../models/comments');
 //Index route
 router.get('/', (req, res) => {
   Campsite.find({}, (err, camps) => {
@@ -40,6 +41,39 @@ router.get('/:id', (req, res) => {
       res.render('campsites/show', {camp: camp});
   });
 });
+//Edit route
+router.get('/:id/edit', (req, res) => {
+  Campsite.findById(req.params.id, (err, camp) => {
+    if(err)
+      res.redirect('/campsites');
+    else
+      res.render('campsites/edit', {camp: camp});
+  });
+});
+//Update route
+router.put('/:id', (req, res) => {
+  Campsite.findByIdAndUpdate(req.params.id, req.body.campsite, (err, camp) => {
+    if(err)
+      res.redirect('/campsites');
+    else 
+      res.redirect('/campsites/' + req.params.id);
+  });
+});
+//Delete route
+router.delete('/:id', (req, res) => {
+  Campsite.findByIdAndRemove(req.params.id, (err, camp) => {
+    if(err)
+      res.redirect('/campsites');
+    else {
+      Comment.deleteMany({ _id: {$in: this.comments}}, (err) => {
+        if(err)
+          console.error(err);
+      });
+      res.redirect('/campsites');
+    }
+  })
+});
+
 
 //Loggedin middleware
 function isLoggedIn(req, res, next) {
