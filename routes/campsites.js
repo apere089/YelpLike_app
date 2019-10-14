@@ -15,13 +15,14 @@ router.get('/', (req, res) => {
 //New post route - for adding new Camps
 router.post('/', middleware.isLoggedIn,(req, res) => {
   var name = req.body.name;
+  var price = req.body.price;
   var image = req.body.image;
   var desc = req.body.description;
   var author = {
     id: req.user._id,
     username: req.user.username
   };
-  var newCampsite = {name: name, image: image, description: desc, author: author};
+  var newCampsite = {name: name, price: price, image: image, description: desc, author: author};
   Campsite.create(newCampsite, (err, camp) => {
     if(err)
       console.log(err);
