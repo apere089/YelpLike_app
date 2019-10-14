@@ -41,7 +41,7 @@ router.get('/:comment_id/edit', (req, res) => {
       res.render('comments/edit', {campsite_id: req.params.id, comment: comment});
   });
 });
-
+//Edit comment post route -  for editing comments
 router.put('/:comment_id', (req, res) => {
   Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, comment) => {
     if(err)
@@ -49,6 +49,15 @@ router.put('/:comment_id', (req, res) => {
     else
       res.redirect('/campsites/' + req.params.id);
   });
+});
+//Delete comments route
+router.delete('/:comment_id', (req, res) => {
+  Comment.findByIdAndRemove(req.params.comment_id, (err) => {
+    if(err)
+      res.redirect('back');
+    else
+      res.redirect('/campsites/' + req.params.id);
+  })
 });
 //Loggedin middleware
 function isLoggedIn(req, res, next) {
