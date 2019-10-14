@@ -32,6 +32,24 @@ router.post('/', isLoggedIn, (req, res) => {
     }
   });
 });
+//Edit comment route
+router.get('/:comment_id/edit', (req, res) => {
+  Comment.findById(req.params.comment_id, (err, comment) => {
+    if(err)
+      res.redirect('back');
+    else
+      res.render('comments/edit', {campsite_id: req.params.id, comment: comment});
+  });
+});
+
+router.put('/:comment_id', (req, res) => {
+  Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, comment) => {
+    if(err)
+      res.redirect('back');
+    else
+      res.redirect('/campsites/' + req.params.id);
+  });
+});
 //Loggedin middleware
 function isLoggedIn(req, res, next) {
   if(req.isAuthenticated())
